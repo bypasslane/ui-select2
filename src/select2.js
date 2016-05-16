@@ -125,7 +125,10 @@ angular.module('ui.select2', []).value('uiSelect2Config', {}).directive('uiSelec
                 elm.select2('val', controller.$viewValue);
                 // Refresh angular to remove the superfluous option
                 controller.$render();
-                if(newVal && !oldVal && controller.$setPristine) {
+                // oldVal is an empty array immediately after init but before the select loads its options,
+                // so reset the input to pristine after loading its options. Otherwise input is
+                // always dirty. See https://github.com/angular-ui/ui-select2/issues/6 for detail.
+                if(newVal && (!oldVal || oldVal.length == 0) && controller.$setPristine) {
                   controller.$setPristine(true);
                 }
               });
